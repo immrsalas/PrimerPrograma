@@ -8,44 +8,50 @@ namespace PrimerPrograma
 {
     public class Alumno
     {
-        
-        //Atributos
-        private string nombre { get; set; }
 
-        private string matricula { get; set; }
+        private List<Calificacion> calificaciones = new List<Calificacion>();
 
-        private List<Calificacion> calificaciones;
+        public string Nombre { get; private set; }
 
-
-        //Constructor
-        public Alumno(string nombre, string matricula)
+        public Alumno(string nombre)
         {
-            this.nombre = nombre;
-            this.matricula = matricula;
-            calificaciones = new List<Calificacion>();
+            if (string.IsNullOrWhiteSpace(nombre))
+                throw new ArgumentException("El nombre no puede estar vacío.");
 
+            Nombre = nombre;
         }
 
-        public void AgregarCalificacion(Calificacion calificacion)
+        public void AgregarCalificacion(double nota)
         {
-            calificaciones.Add(calificacion);
+            calificaciones.Add(new Calificacion(nota));
         }
 
-        public double CalcularPromedio()
+        public double ObtenerPromedio()
         {
             if (calificaciones.Count == 0)
                 return 0;
-            double suma = 0;
-            foreach (var calificacion in calificaciones)
-            {
-                suma += calificacion.nota;
-            }
-            return suma / calificaciones.Count;
+
+            return calificaciones.Average(c => c.Nota);
         }
 
-        public virtual void MostrarInfo()
+        public double ObtenerMayor()
         {
-            Console.WriteLine($"Nombre: {nombre}, Matrícula: {matricula}, Promedio: {CalcularPromedio():F2}");
+            return calificaciones.Max(c => c.Nota);
+        }
+
+        public double ObtenerMenor()
+        {
+            return calificaciones.Min(c => c.Nota);
+        }
+
+        public bool EstaAprobado()
+        {
+            return ObtenerPromedio() >= 70;
+        }
+
+        public List<Calificacion> ObtenerCalificaciones()
+        {
+            return calificaciones;
         }
     }
 }
