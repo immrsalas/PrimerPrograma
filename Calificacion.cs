@@ -8,15 +8,15 @@ namespace PrimerPrograma
 {
     public class Calificacion
     {
-        //Atributos
-        public string materia { get; set; }
-        public double nota { get; set; }
+        public double Nota { get; private set; }
 
-        //Constructor
-        public Calificacion(string materia, double nota)
+        public Calificacion(double nota)
         {
-            this.materia = materia;
-            this.nota = nota;
+            if (nota < 0 || nota > 100)
+                throw new ArgumentException("La calificación debe estar entre 0 y 100.");
+
+            Nota = nota;
         }
     }
+
 }
