@@ -9,45 +9,87 @@ namespace PrimerPrograma
     internal class SistemaCalificaciones
     {
 
-        public void RegistrarAlumno()
+        private List<Alumno> alumnos = new List<Alumno>();
+
+        public void Ejecutar()
         {
-            Console.WriteLine("Registro de Alumno");
-            Console.WriteLine("------------------");
-            Console.Write("Ingrese el nombre del alumno: ");
-            string nombre = Console.ReadLine();
-            Console.Write("Ingrese la matrícula del alumno: ");
-            string matricula = Console.ReadLine();
-            Alumno nuevoAlumno = new Alumno(nombre, matricula);
-            Console.WriteLine("Alumno registrado exitosamente.");
+            bool continuar = true;
+
+            while (continuar)
+            {
+                Console.Write("Nombre del alumno: ");
+                string nombre = Console.ReadLine();
+
+                try
+                {
+                    Alumno alumno = new Alumno(nombre);
+
+                    CapturarCalificaciones(alumno);
+
+                    alumnos.Add(alumno);
+
+                    MostrarResumenAlumno(alumno);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+
+                Console.Write("¿Registrar otro alumno? (s/n): ");
+                continuar = Console.ReadLine().ToLower() == "s";
+            }
+
+            MostrarResumenGeneral();
         }
 
-        public void BuscarAlumno()
+        private void CapturarCalificaciones(Alumno alumno)
         {
-            Console.WriteLine("Búsqueda de Alumno");
-            Console.WriteLine("------------------");
-            Console.Write("Ingrese la matrícula del alumno a buscar: ");
-            string matricula = Console.ReadLine();
-            // Aquí se implementaría la lógica para buscar al alumno en una base de datos o lista
-            Console.WriteLine($"Alumno con matrícula {matricula} encontrado.");
+            bool agregar = true;
+
+            while (agregar)
+            {
+                Console.Write("Calificación: ");
+
+                if (double.TryParse(Console.ReadLine(), out double nota))
+                {
+                    try
+                    {
+                        alumno.AgregarCalificacion(nota);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Entrada inválida.");
+                }
+
+                Console.Write("¿Agregar otra? (s/n): ");
+                agregar = Console.ReadLine().ToLower() == "s";
+            }
         }
 
-        public void GenerarReporte()
+        private void MostrarResumenAlumno(Alumno alumno)
         {
-                       Console.WriteLine("Generación de Reporte de Calificaciones");
-            Console.WriteLine("---------------------------------------");
-            // Aquí se implementaría la lógica para generar el reporte de calificaciones
-            Console.WriteLine("Reporte generado exitosamente.");
+            Console.WriteLine("\n--- Resumen del alumno ---");
+            Console.WriteLine($"Nombre: {alumno.Nombre}");
+            Console.WriteLine($"Promedio: {alumno.ObtenerPromedio():F2}");
+            Console.WriteLine($"Mayor: {alumno.ObtenerMayor()}");
+            Console.WriteLine($"Menor: {alumno.ObtenerMenor()}");
+            Console.WriteLine(alumno.EstaAprobado() ? "APROBADO" : "REPROBADO");
+            Console.WriteLine();
         }
 
-        public static void MostrarMenu()
+        private void MostrarResumenGeneral()
         {
-            Console.WriteLine("Sistema de Calificaciones");
-            Console.WriteLine("------------------------");
-            Console.WriteLine("1. Registrar Alumno");
-            Console.WriteLine("2. Buscar Alumno");
-            Console.WriteLine("3. Generar Reporte de Calificaciones");
-            Console.WriteLine("4. Salir");
-            Console.Write("Seleccione una opción: ");
+            Console.WriteLine("\n=== Resumen General ===");
+
+            foreach (var alumno in alumnos)
+            {
+                Console.WriteLine($"{alumno.Nombre} -> {alumno.ObtenerPromedio():F2}");
+            }
         }
     }
 }

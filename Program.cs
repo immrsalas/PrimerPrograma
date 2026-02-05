@@ -10,7 +10,8 @@ namespace PrimerPrograma
     {
         static void Main(string[] args)
         {
-            
+            SistemaCalificaciones sistema = new SistemaCalificaciones();
+            sistema.Ejecutar();
         }
     }
 }
